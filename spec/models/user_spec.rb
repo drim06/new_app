@@ -83,17 +83,20 @@ describe "Users" do
   end
 
   describe "return value of authenticate method" do
-    before { @user.save }
+    before do
+       @user = User.new(name:"Example User2", email:"user@example2.com", password:"foobar", password_confirmation:"foobar")
+       @user.save 
+    end
     let(:found_user) { User.find_by_email(@user.email) }
 
     describe "with valid password" do
-      it { should == found_user.authenticate(@user.password) }
+      it { should eq found_user.authenticate(@user.password) }
     end
 
     describe "with invalid password" do
       let(:user_for_invalid_password) { found_user.authenticate("invalid") }
 
-      it { should_not == user_for_invalid_password }
+      it { should_not eq user_for_invalid_password }
       specify { user_for_invalid_password.should be_false }
     end
   end
@@ -102,4 +105,12 @@ describe "Users" do
     before { @user.password = @user.password_confirmation = "a" * 5 }
     it { should be_invalid }
   end
+
+  describe "profile page" do
+    #Code to make a user variable
+    before { visit user_path(user) }
+    it { should have_selector('h1', text: user.name) }
+    it { should have_selector('title', text: user.name) }
+  end  
+
 end
