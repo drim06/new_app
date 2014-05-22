@@ -103,4 +103,21 @@ describe User do
 	before {@user.password = @user.password_confirmation = "a" * 5 }
 	it { should be_invalid }
   end
+
+  describe "with invalid information" do
+      it "should not create a user" do
+        expect { click_button submit }.not_to change(User, :count)
+      end
+  end
+
+  describe User do
+    it { should respond_to(:password_confirmation) }
+    it { should respond_to(:remember_token) }
+    it { should respond_to(:authenticate) }
+  end
+
+  describe "remember token" do
+    before { @user.save }
+    its(:remember_token) { should_not_be_blank }
+  end
 end
